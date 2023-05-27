@@ -14,32 +14,32 @@ class FirebaseInterface {
   }
 
   void checkAuthState() {
-    FirebaseAuth.instance.userChanges().listen(handleAuthState);
+    FirebaseAuth.instance.authStateChanges().listen(handleAuthState);
   }
 
   void handleAuthState(User? user) {
     if (user == null) {
       _isUserSignedIn = false;
-      print('User is currently signed out!');
+      print('O usuário está desconectado no momento!');
     } else {
       _isUserSignedIn = true;
-      print('User is signed in!');
+      print('O usuário está conectado!');
     }
   }
 
   Future<String?> signUp(String email, String password) async {
     try {
       final userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        print('A senha fornecida é muito fraca.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        print('A conta já existe para esse e-mail.');
       }
       return e.code;
     } catch (e) {
@@ -55,9 +55,9 @@ class FirebaseInterface {
       return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        print('Nenhum usuário encontrado para esse e-mail.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        print('Senha incorreta fornecida para esse usuário.');
       }
       return e.code;
     }

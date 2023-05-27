@@ -106,7 +106,28 @@ class AuthSignInState extends State<AuthSignInPage> {
               alignment: Alignment.center,
               child: ElevatedButton(
                   onPressed: () async {
-                    // TODO: Coloque aqui o seu código para o fluxo de Sign In
+    try {
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    // Autenticar o usuário usando o email e senha
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: email,
+    password: password,
+    );
+
+    // Navegar para a próxima tela após o login bem-sucedido
+    // Exemplo:
+    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //   return HomeScreen();
+    // }));
+    } catch (e) {
+    // Tratar erros de autenticação
+    print('Erro ao fazer login: $e');
+    }
+    },
+    child: const Text("Sign In"),
+    ),
                   },
                   child: const Text("Sign In")),
             ),
