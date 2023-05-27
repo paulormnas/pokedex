@@ -17,6 +17,7 @@ class PokemonApi {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   Future<Map<String, dynamic>?> getPokemon(String name) async {
