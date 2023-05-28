@@ -4,6 +4,7 @@ import '../../modules/home/domain/pokemon.dart';
 import '../../modules/home/domain/pokemon_controller.dart';
 import 'loader.dart';
 
+// ignore: must_be_immutable
 class PokemonListItem extends StatelessWidget {
   late String pokeName;
 
