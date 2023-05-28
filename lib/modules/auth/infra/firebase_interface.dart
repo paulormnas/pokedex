@@ -56,10 +56,27 @@ class FirebaseInterface {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('Nenhum usuário encontrado para esse e-mail.');
+        print('Senha incorreta fornecida para esse usuário.');
       } else if (e.code == 'wrong-password') {
+        print('Nenhum usuário encontrado para esse e-mail.');
         print('Senha incorreta fornecida para esse usuário.');
       }
       return e.code;
+    }
+  }
+  Future<void> _signUp() async {
+    try {
+      UserCredential userCredential =
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Sign up successful, do something
+      print('Signed up: ${userCredential.user}');
+    } on FirebaseAuthException catch (e) {
+      // Sign up failed, display error message
+      print('Sign-up error: $e');
     }
   }
 }
