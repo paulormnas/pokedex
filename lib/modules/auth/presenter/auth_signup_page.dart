@@ -42,22 +42,6 @@ class _AuthSignUpPageState extends State<AuthSignUpPage> {
     return buttonBoxSize;
   }
 
-  Future<void> _signUp() async {
-    try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      // Sign up successful, do something
-      print('Signed up: ${userCredential.user}');
-    } on FirebaseAuthException catch (e) {
-      // Sign up failed, display error message
-      print('Sign-up error: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     FirebaseInterface firebaseInterface = FirebaseInterface();

@@ -42,22 +42,6 @@ class _AuthSignInPageState extends State<AuthSignInPage> {
     return buttonBoxSize;
   }
 
-  Future<void> _signIn() async {
-    try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      // Sign in successful, do something
-      print('Signed in: ${userCredential.user}');
-    } on FirebaseAuthException catch (e) {
-      // Sign in failed, display error message
-      print('Sign-in error: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     FirebaseInterface firebaseInterface = FirebaseInterface();
