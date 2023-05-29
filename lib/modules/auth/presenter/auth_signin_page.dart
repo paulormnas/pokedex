@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/modules/auth/infra/firebase_interface.dart';
 import 'package:pokedex/modules/auth/presenter/auth_signup_page.dart';
+import 'package:pokedex/modules/home/presenter/home_page.dart';
 
 class AuthSignInPage extends StatefulWidget {
-  const AuthSignInPage({super.key});
+  const AuthSignInPage({Key? key}) : super(key: key);
 
   @override
-  State<AuthSignInPage> createState() => AuthSignInState();
+  _AuthSignInState createState() => _AuthSignInState();
 }
 
-class AuthSignInState extends State<AuthSignInPage> {
+class _AuthSignInState extends State<AuthSignInPage> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   static const double textFieldWidth = 300;
@@ -31,9 +32,9 @@ class AuthSignInState extends State<AuthSignInPage> {
 
   double getButtonBoxSize(BuildContext context) {
     bool isKeyboardClosed =
-        MediaQuery.of(context).viewInsets.bottom == 0 ? true : false;
+    MediaQuery.of(context).viewInsets.bottom == 0 ? true : false;
     double buttonBoxSize =
-        Theme.of(context).textTheme.headlineMedium!.fontSize! * 1.1 + 100.0;
+        Theme.of(context).textTheme.headline6!.fontSize! * 1.1 + 100.0;
 
     if (isKeyboardClosed) {
       buttonBoxSize += 100.0;
@@ -41,9 +42,38 @@ class AuthSignInState extends State<AuthSignInPage> {
     return buttonBoxSize;
   }
 
+  Future<void> signIn() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      // Exibir mensagem de erro para campos vazios
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Por favor, preencha todos os campos.'),
+        ),
+      );
+      return;
+    }
+
+    final firebaseInterface = FirebaseInterface();
+    final error = await firebaseInterface.signIn(email, password);
+    if (error == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return const HomePage(title: 'Pokédex');
+      }));
+      print('Success');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao fazer login: $error'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    FirebaseInterface firebaseInterface = FirebaseInterface();
     return Scaffold(
       body: Center(
         child: Column(
@@ -52,70 +82,69 @@ class AuthSignInState extends State<AuthSignInPage> {
           children: <Widget>[
             Container(
               constraints: BoxConstraints.expand(
-                height: Theme.of(context).textTheme.headlineMedium!.fontSize! *
-                        1.1 +
-                    200.0,
+                height: Theme.of(context).textTheme.headline6!.fontSize! * 1.1 + 200.0,
               ),
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
-              child: Text('PokeDex',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium!
-                      .copyWith(color: Colors.blue)),
+              child: Text(
+                'PokeDex',
+                style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.blue),
+              ),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              const Icon(Icons.person),
-              SizedBox(
-                width: textFieldWidth,
-                height: textFieldHeight,
-                child: TextField(
-                  controller: _emailController,
-                  obscureText: false,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Email',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Icon(Icons.person),
+                SizedBox(
+                  width: textFieldWidth,
+                  height: textFieldHeight,
+                  child: TextField(
+                    controller: _emailController,
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             Container(
               padding: const EdgeInsets.only(top: 20),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Icon(Icons.password),
-                    SizedBox(
-                      width: textFieldWidth,
-                      height: textFieldHeight,
-                      child: TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Icon(Icons.password),
+                  SizedBox(
+                    width: textFieldWidth,
+                    height: textFieldHeight,
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
                       ),
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             ),
             Container(
-              constraints:
-                  BoxConstraints.expand(height: getButtonBoxSize(context)),
+              constraints: BoxConstraints.expand(height: getButtonBoxSize(context)),
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
               child: ElevatedButton(
-                  onPressed: () async {
-                    // TODO: Coloque aqui o seu código para o fluxo de Sign In
-                  },
-                  child: const Text("Sign In")),
+                onPressed: signIn,
+                child: const Text("Sign In"),
+              ),
             ),
             SizedBox(
               width: textFieldWidth,
               height: textFieldHeight,
               child: TextButton(
-                style: const ButtonStyle(alignment: Alignment.center),
-                child: const Text("Preciso criar uma conta"),
+                style: ButtonStyle(alignment: Alignment.center),
+                child: const Text("Não tem uma conta? Cadastre-se."),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const AuthSignUpPage();
