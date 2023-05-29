@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex/modules/auth/presenter/auth_signin_page.dart';
+import 'package:pokedex/modules/home/presenter/home_page.dart';
 
 import 'firebase_options.dart';
 
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const AuthSignInPage(),
+      routes: {
+        '/home': (_) => const HomePage(title: 'Página Inicial',),
+      },
     );
   }
 }
